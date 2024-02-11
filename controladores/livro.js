@@ -1,4 +1,4 @@
-const { getTodosLivros, getLivroPorId, insereLivro, modificaLivro } = require("../servicos/livro")
+const { getTodosLivros, getLivroPorId, insereLivro, modificaLivro, deleteLivroPorId } = require("../servicos/livro")
 
 function getLivros(req, res) {
     try {
@@ -15,8 +15,16 @@ function getLivros(req, res) {
 function getLivro(req, res) {
     try {
         const id = req.params.id
-        const livro = getLivroPorId(id)  
-        res.send(livro)
+
+        if (id && Number(id)) {
+            const livro = getLivroPorId(id)  
+            res.send(livro)
+        } else {
+            res.status(422)
+            res.send("Id inválido")
+        }
+
+        
     } catch (error) {
         res.status(500)
         res.send(error.message)
@@ -38,10 +46,34 @@ function postLivro(req, res) {
 function patchLivro(req, res) {
     try {
         const id = req.params.id
+
+        if (id && Number(id)) {
         const body = req.body
 
         modificaLivro(body, id)
         res.send("Livro modificado com sucesso")
+        } else {
+            res.status(422)
+            res.send("Id inválido")
+        }
+
+    } catch (error) {
+        res.status(500)
+        res.send(error.message)
+    }
+}
+
+function deleteLivro(req, res) {
+    try {
+        const id = req.params.id
+
+        if (id && Number(id)) {
+            deleteLivroPorId(id)  
+            res.send("livro removido com sucesso")
+        } else {
+            res.status(422)
+            res.send("Id inválido")
+        }
     } catch (error) {
         res.status(500)
         res.send(error.message)
@@ -52,5 +84,6 @@ module.exports = {
     getLivros,
     getLivro,
     postLivro,
-    patchLivro
+    patchLivro,
+    deleteLivro
 }
